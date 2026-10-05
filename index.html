@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 80px;
+            background-color: #f2f7ff;
+        }
+
+        h1 {
+            color: #1e3a8a;
+        }
+
+        input {
+            padding: 12px;
+            width: 250px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 30px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Weather App</h1>
+
+    <input
+        type="text"
+        id="city"
+        placeholder="Enter city"
+        value="Salem"
+    >
+
+    <button onclick="getWeather()">Get Weather</button>
+
+    <h2 id="result">Enter a city and click Get Weather</h2>
+
+    <script>
+        async function getWeather() {
+
+            const city = document.getElementById("city").value;
+
+            if (!city) {
+                document.getElementById("result").innerText =
+                    "Please enter a city";
+                return;
+            }
+
+            try {
+
+                const response = await fetch(
+                    "/api/weather?city=" + encodeURIComponent(city)
+                );
+
+                const data = await response.json();
+
+                console.log(data);
+
+                if (!response.ok) {
+                    document.getElementById("result").innerText =
+                        data.error || "Unable to get weather";
+                    return;
+                }
+
+                document.getElementById("result").innerText =
+                    data.city + " - " +
+                    data.temperature + "°C - " +
+                    data.condition;
+
+            } catch (error) {
+
+                console.error(error);
+
+                document.getElementById("result").innerText =
+                    "Unable to connect to weather server";
+            }
+        }
+    </script>
+
+</body>
+</html>
